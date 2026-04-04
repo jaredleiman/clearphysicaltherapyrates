@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClearPhysicalTherapyRates — PPO Fee Schedule Intelligence for PT Practices</title>
+  <meta name="description" content="Monthly PPO fee schedule monitoring for physical therapy practices. Know when Medicare Part B, UnitedHealth, Aetna, Cigna, BCBS, and Humana change your reimbursement rates — before it costs you revenue." />
+  <meta name="keywords" content="physical therapy fee schedule, PT PPO rates, Medicare Part B PFS, physical therapy reimbursement, CPT 97110 rates, physical therapy billing intelligence" />
+  <meta property="og:title" content="ClearPhysicalTherapyRates — PT Fee Schedule Intelligence" />
+  <meta property="og:description" content="Monthly monitoring of Medicare PFS and commercial carrier rate changes for physical therapy practices." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://clearphysicaltherapyrates.com" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --cream:        #FAF7F2;
+      --cream-deep:   #F2EDE4;
+      --parchment:    #E8DFD0;
+      --forest:       #2D4A35;
+      --forest-mid:   #3D6348;
+      --forest-light: #5A8A67;
+      --amber:        #C4872A;
+      --amber-light:  #D9A04A;
+      --ink:          #1A1A18;
+      --ink-mid:      #3A3A36;
+      --ink-light:    #6B6B65;
+      --rule:         #C8BFB0;
+      --white:        #FFFFFF;
+
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans:  'Barlow', sans-serif;
+      --cond:  'Barlow Condensed', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── TOP RULE BAR ─── */
+    .rule-top {
+      height: 4px;
+      background: linear-gradient(90deg, var(--forest) 0%, var(--forest-mid) 50%, var(--amber) 100%);
+    }
+
+    /* ─── MASTHEAD ─── */
+    .masthead {
+      background: var(--cream);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 40px;
+    }
+    .masthead-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .wordmark {
+      font-family: var(--serif);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--forest);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .wordmark span {
+      color: var(--amber);
+    }
+    .masthead-nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .masthead-nav a {
+      font-family: var(--cond);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .masthead-nav a:hover { color: var(--forest); }
+    .masthead-cta {
+      background: var(--forest);
+      color: var(--white) !important;
+      padding: 8px 20px;
+      font-size: 0.75rem !important;
+      transition: background 0.2s !important;
+    }
+    .masthead-cta:hover { background: var(--forest-mid) !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      height: 620px;
+      overflow: hidden;
+    }
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      display: block;
+      filter: brightness(0.52) saturate(0.85);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(26, 40, 29, 0.82) 0%,
+        rgba(26, 40, 29, 0.60) 50%,
+        rgba(26, 40, 29, 0.20) 100%
+      );
+    }
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 80px;
+      max-width: 820px;
+    }
+    .hero-eyebrow {
+      font-family: var(--cond);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber-light);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--amber-light);
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 600;
+      line-height: 1.12;
+      color: var(--white);
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--amber-light);
+    }
+    .hero-sub {
+      font-family: var(--sans);
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.65;
+      max-width: 540px;
+      margin-bottom: 36px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--white);
+      font-family: var(--cond);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 32px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--amber-light); transform: translateY(-1px); }
+    .btn-ghost {
+      display: inline-block;
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      font-family: var(--cond);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 13px 28px;
+      border: 1px solid rgba(255,255,255,0.4);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.8); color: var(--white); }
+
+    /* ─── TICKER BAND ─── */
+    .ticker-band {
+      background: var(--forest);
+      padding: 12px 0;
+      overflow: hidden;
+      border-bottom: 2px solid var(--amber);
+    }
+    .ticker-track {
+      display: flex;
+      gap: 0;
+      animation: ticker-scroll 38s linear infinite;
+      width: max-content;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      font-family: var(--cond);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      white-space: nowrap;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ticker-item .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-up   { background: #6FCF97; }
+    .dot-down { background: #EB5757; }
+    .dot-info { background: var(--amber-light); }
+
+    /* ─── SECTION LAYOUT ─── */
+    .section {
+      padding: 80px 40px;
+    }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-rule {
+      border: none;
+      border-top: 1.5px solid var(--rule);
+      margin-bottom: 48px;
+    }
+    .section-label {
+      font-family: var(--cond);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 2.9rem);
+      font-weight: 600;
+      line-height: 1.18;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .section-title em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--forest-mid);
+    }
+
+    /* ─── INTELLIGENCE BRIEF (WHY SECTION) ─── */
+    .brief {
+      background: var(--cream);
+    }
+    .brief-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-top: 56px;
+    }
+    .brief-left {}
+    .brief-lead {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ink-mid);
+      margin-bottom: 28px;
+    }
+    .brief-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .brief-right {}
+    .stat-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1.5px solid var(--rule);
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 24px;
+      align-items: start;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--forest);
+      line-height: 1;
+    }
+    .stat-num sup {
+      font-size: 1rem;
+      font-weight: 400;
+      vertical-align: super;
+    }
+    .stat-label {
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--ink-mid);
+      line-height: 1.55;
+      padding-top: 6px;
+    }
+    .stat-label strong {
+      display: block;
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 0.9rem;
+      margin-bottom: 3px;
+    }
+
+    /* ─── WHAT WE MONITOR ─── */
+    .monitor {
+      background: var(--cream-deep);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .monitor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 56px;
+      border-top: 1.5px solid var(--rule);
+    }
+    .monitor-card {
+      padding: 40px 36px;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      transition: background 0.2s;
+    }
+    .monitor-card:hover { background: rgba(45, 74, 53, 0.04); }
+    .monitor-card:nth-child(3n) { border-right: none; }
+    .monitor-card:nth-last-child(-n+3) { border-bottom: none; }
+    .monitor-icon {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 20px;
+      color: var(--forest);
+    }
+    .monitor-carrier {
+      font-family: var(--cond);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+    .monitor-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .monitor-desc {
+      font-size: 0.87rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.7;
+    }
+
+    /* ─── PHOTO BREAK ─── */
+    .photo-break {
+      height: 380px;
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-break img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      filter: brightness(0.88) saturate(0.9);
+    }
+    .photo-caption {
+      position: absolute;
+      bottom: 28px;
+      right: 48px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.78);
+      max-width: 420px;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* ─── REPORT SAMPLE ─── */
+    .report-sample {
+      background: var(--cream);
+    }
+    .sample-layout {
+      display: grid;
+      grid-template-columns: 1fr 460px;
+      gap: 80px;
+      align-items: start;
+      margin-top: 56px;
+    }
+    .sample-left {}
+    .sample-desc {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--ink-mid);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+    .sample-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .sample-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--ink-mid);
+      line-height: 1.55;
+    }
+    .check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--forest);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 10px;
+    }
+    .sample-right {}
+    .report-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+    }
+    .report-header {
+      background: var(--forest);
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .report-header-title {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--white);
+      letter-spacing: 0.01em;
+    }
+    .report-date {
+      font-family: var(--cond);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+    .report-body {
+      padding: 28px;
+    }
+    .report-section-head {
+      font-family: var(--cond);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .cpt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 0.82rem;
+    }
+    .cpt-table th {
+      font-family: var(--cond);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      text-align: left;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .cpt-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(200,191,176,0.4);
+      color: var(--ink-mid);
+      font-weight: 400;
+    }
+    .cpt-table tr:last-child td { border-bottom: none; }
+    .cpt-code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--forest);
+    }
+    .rate-change {
+      font-family: var(--cond);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 8px;
+    }
+    .rate-up   { color: #2A7A4B; background: #E8F5EE; }
+    .rate-down { color: #B94040; background: #FAEAEA; }
+    .rate-hold { color: var(--ink-light); background: var(--cream-deep); }
+    .alert-box {
+      background: #FEF9EE;
+      border-left: 3px solid var(--amber);
+      padding: 14px 16px;
+      margin-top: 4px;
+    }
+    .alert-box p {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+    .alert-box strong { font-weight: 600; color: var(--amber); }
+
+    /* ─── PRICING ─── */
+    .pricing {
+      background: var(--cream-deep);
+      border-top: 1px solid var(--rule);
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 56px;
+      max-width: 860px;
+    }
+    .price-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      padding: 44px 40px;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .price-card:hover {
+      box-shadow: 0 12px 48px rgba(45, 74, 53, 0.12);
+    }
+    .price-card.featured {
+      border-color: var(--forest);
+      border-width: 2px;
+    }
+    .price-badge {
+      position: absolute;
+      top: -12px;
+      left: 32px;
+      background: var(--forest);
+      color: var(--white);
+      font-family: var(--cond);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+    }
+    .price-tier {
+      font-family: var(--cond);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 16px;
+    }
+    .price-amount {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .price-dollar {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--ink-mid);
+    }
+    .price-num {
+      font-family: var(--serif);
+      font-size: 3.2rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .price-period {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--ink-light);
+    }
+    .price-tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      margin-bottom: 28px;
+    }
+    .price-rule { border: none; border-top: 1px solid var(--rule); margin: 24px 0; }
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .price-features li {
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--ink-mid);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+    .price-features .check {
+      width: 16px;
+      height: 16px;
+      font-size: 9px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .price-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--forest);
+      color: var(--white);
+      font-family: var(--cond);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 15px;
+      transition: background 0.2s;
+    }
+    .price-btn:hover { background: var(--forest-mid); }
+    .price-btn.amber { background: var(--amber); }
+    .price-btn.amber:hover { background: var(--amber-light); }
+
+    /* ─── TESTIMONIAL / PULL QUOTE ─── */
+    .pull-quote-section {
+      background: var(--forest);
+      padding: 80px 40px;
+    }
+    .pull-quote-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .pull-mark {
+      font-family: var(--serif);
+      font-size: 5rem;
+      line-height: 0.6;
+      color: var(--amber);
+      display: block;
+      margin-bottom: 20px;
+    }
+    .pull-text {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+    .pull-attr {
+      font-family: var(--cond);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber-light);
+    }
+
+    /* ─── PHOTO + COPY ─── */
+    .split-section {
+      background: var(--cream);
+      padding: 0;
+    }
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 500px;
+    }
+    .split-img-wrap {
+      overflow: hidden;
+    }
+    .split-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    .split-img-wrap:hover img { transform: scale(1.03); }
+    .split-copy {
+      padding: 80px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .split-copy .section-label { margin-bottom: 16px; }
+    .split-copy h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .split-copy p {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    /* ─── FAQ ─── */
+    .faq {
+      background: var(--cream-deep);
+      border-top: 1px solid var(--rule);
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 56px;
+      border-top: 1.5px solid var(--rule);
+    }
+    .faq-item {
+      padding: 36px 0 36px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .faq-item:nth-child(odd) { padding-right: 56px; border-right: 1px solid var(--rule); }
+    .faq-item:nth-child(even) { padding-left: 56px; }
+    .faq-q {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .faq-a {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.75;
+    }
+
+    /* ─── FINAL CTA SECTION ─── */
+    .final-cta {
+      background: var(--cream);
+      border-top: 1px solid var(--rule);
+      padding: 100px 40px;
+      text-align: center;
+    }
+    .final-cta-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .final-cta h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .final-cta h2 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--forest-mid);
+    }
+    .final-cta p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+    .final-cta-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .final-cta-note {
+      font-family: var(--cond);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink);
+      padding: 48px 40px;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .footer-brand {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+    .footer-brand span { color: var(--amber-light); }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      gap: 28px;
+    }
+    .footer-links a {
+      font-family: var(--cond);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: rgba(255,255,255,0.85); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.35);
+      font-weight: 300;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-eyebrow { animation: fadeUp 0.6s ease 0.1s both; }
+    .hero h1      { animation: fadeUp 0.6s ease 0.25s both; }
+    .hero-sub     { animation: fadeUp 0.6s ease 0.4s both; }
+    .hero-actions { animation: fadeUp 0.6s ease 0.55s both; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .brief-grid, .sample-layout, .pricing-grid,
+      .faq-grid, .split-grid, .signup-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .hero-content { padding: 0 36px; }
+      .monitor-grid { grid-template-columns: 1fr 1fr; }
+      .faq-item:nth-child(odd) { padding-right: 0; border-right: none; }
+      .faq-item:nth-child(even) { padding-left: 0; }
+    }
+    @media (max-width: 600px) {
+      .masthead-nav { display: none; }
+      .hero { height: 520px; }
+      .monitor-grid { grid-template-columns: 1fr; }
+      .section { padding: 56px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP RULE -->
+<div class="rule-top"></div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="/" class="wordmark">Clear<span>PT</span>Rates</a>
+    <nav>
+      <ul class="masthead-nav">
+        <li><a href="#monitor">Coverage</a></li>
+        <li><a href="#sample">Sample Report</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#signup" class="masthead-cta">Subscribe</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" aria-label="Physical therapist reviewing patient treatment plan in modern clinic">
+  <img
+    src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1600&q=80&auto=format&fit=crop"
+    alt="Physical therapist working with patient on rehabilitation exercises in bright modern PT clinic"
+    class="hero-img"
+    loading="eager"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">PPO Fee Schedule Intelligence</p>
+    <h1>Know every rate change<br />before it <em>costs</em> you.</h1>
+    <p class="hero-sub">
+      Medicare Part B updates quarterly. Commercial carriers revise fee schedules without notice. Most PT practices discover the changes months later — after thousands in lost reimbursement. ClearPhysicalTherapyRates monitors every carrier, every month, and delivers a plain-English briefing to your inbox.
+    </p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">Start Monitoring — $147/mo</a>
+      <a href="#sample" class="btn-ghost">See a Sample Report</a>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE TICKER -->
+<div class="ticker-band" aria-label="Recent fee schedule alert updates">
+  <div class="ticker-track">
+    <!-- Set 1 -->
+    <div class="ticker-item"><span class="dot dot-down"></span>Medicare PFS 2026 — Conversion Factor Reduced 2.8% · CPT 97110 Impacted</div>
+    <div class="ticker-item"><span class="dot dot-up"></span>UnitedHealth PT Rate Revision — Ohio +3.1% Effective Q2 2026</div>
+    <div class="ticker-item"><span class="dot dot-info"></span>Cigna Provider Manual Update — Active Care Path Requirements Changed</div>
+    <div class="ticker-item"><span class="dot dot-down"></span>Aetna — 97530 Reimbursement Floor Reduced in 14 States</div>
+    <div class="ticker-item"><span class="dot dot-up"></span>BCBS National — New Credentialing Window Open Through June 2026</div>
+    <div class="ticker-item"><span class="dot dot-info"></span>Indiana PT Board — Supervision Ratio Rule Updated March 2026</div>
+    <div class="ticker-item"><span class="dot dot-down"></span>Humana — RTM Code Bundle Policy Change Effective May 2026</div>
+    <!-- Set 2 (mirror for seamless loop) -->
+    <div class="ticker-item"><span class="dot dot-down"></span>Medicare PFS 2026 — Conversion Factor Reduced 2.8% · CPT 97110 Impacted</div>
+    <div class="ticker-item"><span class="dot dot-up"></span>UnitedHealth PT Rate Revision — Ohio +3.1% Effective Q2 2026</div>
+    <div class="ticker-item"><span class="dot dot-info"></span>Cigna Provider Manual Update — Active Care Path Requirements Changed</div>
+    <div class="ticker-item"><span class="dot dot-down"></span>Aetna — 97530 Reimbursement Floor Reduced in 14 States</div>
+    <div class="ticker-item"><span class="dot dot-up"></span>BCBS National — New Credentialing Window Open Through June 2026</div>
+    <div class="ticker-item"><span class="dot dot-info"></span>Indiana PT Board — Supervision Ratio Rule Updated March 2026</div>
+    <div class="ticker-item"><span class="dot dot-down"></span>Humana — RTM Code Bundle Policy Change Effective May 2026</div>
+  </div>
+</div>
+
+<!-- WHY SECTION -->
+<section class="section brief" id="why">
+  <div class="section-inner">
+    <hr class="section-rule" />
+    <p class="section-label">The Intelligence Gap</p>
+    <h2 class="section-title">Fee schedules change constantly.<br /><em>Most practices find out too late.</em></h2>
+    <div class="brief-grid">
+      <div class="brief-left">
+        <p class="brief-lead">
+          Physical therapy reimbursement is governed by dozens of overlapping rate schedules, provider manuals, and CPT policy documents — updated on different calendars, published in different places, with no central notification system.
+        </p>
+        <p class="brief-body">
+          Medicare Part B issues Physician Fee Schedule updates annually in November, with interim adjustments throughout the year. Commercial carriers — UnitedHealth, Aetna, Cigna, BCBS, Humana — update their contracted rates and provider manual policies on independent schedules with minimal advance notice.
+        </p>
+        <p class="brief-body">
+          The result: most PT practices are operating on outdated rate assumptions. Billing teams charge what they've always charged. Negotiation windows pass undetected. New CPT codes arrive and practices miss months of correct billing.
+        </p>
+        <p class="brief-body">
+          ClearPhysicalTherapyRates monitors it all, synthesizes it into plain English, and delivers a single monthly briefing — so you spend your time treating patients, not reading carrier bulletins.
+        </p>
+      </div>
+      <div class="brief-right">
+        <div class="stat-stack">
+          <div class="stat-row">
+            <div class="stat-num">2.8<sup>%</sup></div>
+            <div class="stat-label">
+              <strong>Medicare PFS Conversion Factor Cut</strong>
+              2026 rate reduction affecting every PT CPT code billed to Medicare — the largest in a decade.
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-num">6<sup>+</sup></div>
+            <div class="stat-label">
+              <strong>Major Carriers, Independent Schedules</strong>
+              Each carrier publishes fee changes on its own calendar. No coordinated notification system exists.
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-num">47</div>
+            <div class="stat-label">
+              <strong>PT-Relevant CPT Codes Under Active Review</strong>
+              CMS regularly reclassifies, rebundles, or reprices PT codes with minimal practitioner outreach.
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-num">90<sup>d</sup></div>
+            <div class="stat-label">
+              <strong>Average Discovery Lag</strong>
+              Typical time between a fee schedule change and a practice detecting the revenue impact.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE MONITOR -->
+<section class="section monitor" id="monitor">
+  <div class="section-inner">
+    <hr class="section-rule" />
+    <p class="section-label">Coverage</p>
+    <h2 class="section-title">Every carrier. Every month.<br /><em>Nothing slips through.</em></h2>
+    <div class="monitor-grid">
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="4" y="4" width="28" height="28" rx="1"/>
+          <line x1="4" y1="13" x2="32" y2="13"/>
+          <line x1="14" y1="13" x2="14" y2="32"/>
+        </svg>
+        <p class="monitor-carrier">Federal</p>
+        <h3 class="monitor-title">Medicare Part B Physician Fee Schedule</h3>
+        <p class="monitor-desc">Annual PFS updates, interim conversion factor changes, CPT add-on and new code assignments, and CMS policy transmittals affecting PT billing.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="18" cy="18" r="14"/>
+          <path d="M18 10v8l5 5"/>
+        </svg>
+        <p class="monitor-carrier">UnitedHealth</p>
+        <h3 class="monitor-title">UHC PT Fee Schedule & Policy Updates</h3>
+        <p class="monitor-desc">State-level fee schedule revisions, active care path policy changes, authorization threshold updates, and network tier adjustments.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 18h24M18 6l12 12-12 12"/>
+        </svg>
+        <p class="monitor-carrier">Aetna</p>
+        <h3 class="monitor-title">Aetna PT Reimbursement & Manual Changes</h3>
+        <p class="monitor-desc">Fee schedule floor adjustments by state and CPT code, clinical policy bulletin updates for PT services, and credentialing requirement changes.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 4L4 11v14l14 7 14-7V11L18 4z"/>
+        </svg>
+        <p class="monitor-carrier">Cigna</p>
+        <h3 class="monitor-title">Cigna Coverage Policies & Rate Revisions</h3>
+        <p class="monitor-desc">Coverage determination changes for PT modalities, active care path requirements, bundling policy changes, and regional rate differentials.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="4" y="8" width="28" height="20" rx="1"/>
+          <path d="M4 14h28"/>
+          <circle cx="10" cy="21" r="2"/>
+        </svg>
+        <p class="monitor-carrier">BCBS</p>
+        <h3 class="monitor-title">Blue Cross Blue Shield Plan Updates</h3>
+        <p class="monitor-desc">State plan rate schedule changes, credentialing window openings, prior authorization updates, and supplemental benefit changes affecting PT.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 4c-7.7 0-14 6.3-14 14s6.3 14 14 14 14-6.3 14-14S25.7 4 18 4z"/>
+          <path d="M18 10v5l4 2"/>
+        </svg>
+        <p class="monitor-carrier">Humana</p>
+        <h3 class="monitor-title">Humana PT Policy & Rate Monitoring</h3>
+        <p class="monitor-desc">RTM and remote monitoring bundle changes, MA plan PT coverage policies, value-based care program updates, and contracted rate revisions.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 28V16l10-10 10 10v12H22v-8h-8v8H8z"/>
+        </svg>
+        <p class="monitor-carrier">State Boards</p>
+        <h3 class="monitor-title">State PT Board Regulatory Updates</h3>
+        <p class="monitor-desc">Supervision ratio rule changes, aide delegation policy updates, telehealth PT coverage expansions or restrictions, and licensure renewal impacts on billing.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="8" y="4" width="20" height="28" rx="1"/>
+          <line x1="12" y1="12" x2="24" y2="12"/>
+          <line x1="12" y1="18" x2="24" y2="18"/>
+          <line x1="12" y1="24" x2="18" y2="24"/>
+        </svg>
+        <p class="monitor-carrier">CPT Codes</p>
+        <h3 class="monitor-title">PT CPT Code Changes & Valuations</h3>
+        <p class="monitor-desc">AMA CPT code revisions for 97110, 97530, 97140, 97012 and related codes — new code assignments, bundling edits, and RVU valuation updates.</p>
+      </div>
+
+      <div class="monitor-card">
+        <svg class="monitor-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 10h24M6 18h16M6 26h20"/>
+        </svg>
+        <p class="monitor-carrier">Monthly Digest</p>
+        <h3 class="monitor-title">Plain-English Monthly Briefing</h3>
+        <p class="monitor-desc">Every change synthesized into actionable intelligence — what changed, which CPT codes are affected, what you should do about it, delivered by the 5th of each month.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO BREAK -->
+<div class="photo-break">
+  <img
+    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80&auto=format&fit=crop"
+    alt="Physical therapy clinic reception area with modern equipment and bright professional lighting"
+    loading="lazy"
+  />
+  <p class="photo-caption">"The practices that protect their revenue are the ones that see the changes coming — not the ones still reading last year's fee schedule."</p>
+</div>
+
+<!-- SAMPLE REPORT -->
+<section class="section report-sample" id="sample">
+  <div class="section-inner">
+    <hr class="section-rule" />
+    <p class="section-label">Sample Intelligence Report</p>
+    <h2 class="section-title">Exactly what lands<br /><em>in your inbox each month.</em></h2>
+    <div class="sample-layout">
+      <div class="sample-left">
+        <p class="sample-desc">
+          Not a data dump. Not a link to a carrier bulletin. A synthesized briefing — written for PT practice owners and billing managers, covering only what changed and what it means for your practice.
+        </p>
+        <p style="font-size:0.9rem;font-weight:300;color:var(--ink-light);line-height:1.75;">
+          Each monthly report includes a CPT code rate change summary for your state, carrier policy alerts, regulatory updates from your state PT board, and a recommended action checklist. Multi-Location subscribers receive a consolidated view across all practice locations.
+        </p>
+        <ul class="sample-features">
+          <li><span class="check">✓</span>Medicare PFS conversion factor and RVU updates for PT codes</li>
+          <li><span class="check">✓</span>Commercial carrier rate changes flagged by state and CPT code</li>
+          <li><span class="check">✓</span>Provider manual policy changes affecting authorization or coverage</li>
+          <li><span class="check">✓</span>State PT board supervision, telehealth, and aide delegation updates</li>
+          <li><span class="check">✓</span>Recommended action checklist for billing and front desk teams</li>
+          <li><span class="check">✓</span>Delivered by the 5th of each month, every month</li>
+        </ul>
+      </div>
+      <div class="sample-right">
+        <div class="report-card">
+          <div class="report-header">
+            <span class="report-header-title">ClearPTRates — Monthly Intelligence Brief</span>
+            <span class="report-date">May 2026 · Indiana</span>
+          </div>
+          <div class="report-body">
+            <p class="report-section-head">Medicare Part B — CPT Rate Summary</p>
+            <table class="cpt-table">
+              <thead>
+                <tr>
+                  <th>CPT</th>
+                  <th>Description</th>
+                  <th>Change</th>
+                  <th>New Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="cpt-code">97110</span></td>
+                  <td>Therapeutic Exercise</td>
+                  <td><span class="rate-change rate-down">▼ −3.1%</span></td>
+                  <td>$30.82</td>
+                </tr>
+                <tr>
+                  <td><span class="cpt-code">97530</span></td>
+                  <td>Therapeutic Activities</td>
+                  <td><span class="rate-change rate-down">▼ −2.8%</span></td>
+                  <td>$31.44</td>
+                </tr>
+                <tr>
+                  <td><span class="cpt-code">97140</span></td>
+                  <td>Manual Therapy</td>
+                  <td><span class="rate-change rate-hold">— 0.0%</span></td>
+                  <td>$28.16</td>
+                </tr>
+                <tr>
+                  <td><span class="cpt-code">97012</span></td>
+                  <td>Mechanical Traction</td>
+                  <td><span class="rate-change rate-up">▲ +1.2%</span></td>
+                  <td>$14.78</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="report-section-head">Carrier Alert — Aetna</p>
+            <div class="alert-box">
+              <p><strong>Action Required:</strong> Aetna revised its clinical policy bulletin for 97530 effective May 1, 2026 — services now require documented functional limitation in the same note as the treatment. Retroactive audits possible. Update your documentation template before next billing cycle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section class="pull-quote-section">
+  <div class="pull-quote-inner">
+    <span class="pull-mark">"</span>
+    <p class="pull-text">We caught a UnitedHealth fee schedule revision that would have cost us about $1,400 a month. Our biller had no idea it had changed. This paid for itself in the first week.</p>
+    <p class="pull-attr">PT Practice Owner · Columbus, Ohio · Practice Monitor Subscriber</p>
+  </div>
+</section>
+
+<!-- SPLIT PHOTO + COPY -->
+<section class="split-section">
+  <div class="split-grid">
+    <div class="split-img-wrap">
+      <img
+        src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=900&q=80&auto=format&fit=crop"
+        alt="Physical therapist reviewing billing documentation and insurance records at desk in clinical office setting"
+        loading="lazy"
+      />
+    </div>
+    <div class="split-copy">
+      <p class="section-label">Built for PT Practices</p>
+      <h2>Not a generic compliance tool.<br />A PT-specific intelligence service.</h2>
+      <p>
+        Most billing intelligence tools are built for large health systems with dedicated compliance staff. ClearPhysicalTherapyRates is built for the independent PT practice and small group — the practice owner who does the clinical work and reads the EOBs, the billing manager who juggles authorizations and fee schedules at the same time.
+      </p>
+      <p>
+        We monitor the exact carriers your patients use, track the CPT codes your practice bills most, and filter out everything else. No information overload. No generic alerts. Just the changes that affect your bottom line, in plain English.
+      </p>
+      <p>
+        Cancel anytime. No contracts. The first digest arrives within 30 days of subscribing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section pricing" id="pricing">
+  <div class="section-inner">
+    <hr class="section-rule" />
+    <p class="section-label">Subscription Plans</p>
+    <h2 class="section-title">Straightforward pricing.<br /><em>Cancel any time.</em></h2>
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <p class="price-tier">Practice Monitor</p>
+        <div class="price-amount">
+          <span class="price-dollar">$</span>
+          <span class="price-num">147</span>
+          <span class="price-period">&nbsp;/ month</span>
+        </div>
+        <p class="price-tagline">Single-location PT practice.</p>
+        <hr class="price-rule" />
+        <ul class="price-features">
+          <li><span class="check">✓</span>Monthly fee schedule intelligence digest</li>
+          <li><span class="check">✓</span>Medicare PFS + 5 major commercial carriers</li>
+          <li><span class="check">✓</span>Your state PT board regulatory updates</li>
+          <li><span class="check">✓</span>CPT code change alerts (97110, 97530, 97140, 97012)</li>
+          <li><span class="check">✓</span>Recommended billing action checklist</li>
+          <li><span class="check">✓</span>Delivered by the 5th of each month</li>
+        </ul>
+        <a href="https://buy.stripe.com/4gMcN56TjatRbqG74feIw0e" class="price-btn">Start Practice Monitor</a>
+      </div>
+
+      <div class="price-card featured">
+        <span class="price-badge">Most Popular</span>
+        <p class="price-tier">Multi-Location</p>
+        <div class="price-amount">
+          <span class="price-dollar">$</span>
+          <span class="price-num">247</span>
+          <span class="price-period">&nbsp;/ month</span>
+        </div>
+        <p class="price-tagline">Group practices &amp; PT networks.</p>
+        <hr class="price-rule" />
+        <ul class="price-features">
+          <li><span class="check">✓</span>Everything in Practice Monitor</li>
+          <li><span class="check">✓</span>Multi-state fee schedule coverage</li>
+          <li><span class="check">✓</span>Consolidated cross-location rate summary</li>
+          <li><span class="check">✓</span>All carrier monitoring across all your states</li>
+          <li><span class="check">✓</span>Priority delivery — by the 3rd of each month</li>
+          <li><span class="check">✓</span>Email support for rate questions</li>
+        </ul>
+        <a href="https://buy.stripe.com/bJe4gz91rbxV52i88jeIw0f" class="price-btn amber">Start Multi-Location</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq" id="faq">
+  <div class="section-inner">
+    <hr class="section-rule" />
+    <p class="section-label">Frequently Asked Questions</p>
+    <h2 class="section-title">Common questions,<br /><em>straight answers.</em></h2>
+    <div class="faq-grid">
+
+      <div class="faq-item">
+        <p class="faq-q">How is this different from reading CMS bulletins myself?</p>
+        <p class="faq-a">CMS bulletins are dense, technical, and published across multiple sites. We read them, cross-reference carrier-specific changes in the same billing period, translate them into plain English, and tell you what to do. It's the difference between reading raw data and receiving an intelligence brief.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Which CPT codes do you track?</p>
+        <p class="faq-a">Our core coverage includes 97110 (therapeutic exercise), 97530 (therapeutic activities), 97140 (manual therapy), and 97012 (mechanical traction), plus adjacent evaluation codes, functional testing codes, and RTM bundle codes — all major PT billing categories.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Do you cover all states?</p>
+        <p class="faq-a">Yes. You select your state at signup, and we monitor your state PT board in addition to federal Medicare PFS changes and national carrier rate updates. Multi-Location subscribers can specify multiple states.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">When does the first report arrive?</p>
+        <p class="faq-a">Within 24 hours of subscribing you'll receive a welcome email confirming your coverage. Your first full monthly digest arrives by the 5th of the following month (3rd for Multi-Location subscribers).</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Can I cancel at any time?</p>
+        <p class="faq-a">Yes. No contracts, no cancellation fees. Cancel anytime from your Stripe billing portal and you'll retain access through the end of the billing period.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Is this a legal or compliance service?</p>
+        <p class="faq-a">ClearPhysicalTherapyRates provides fee schedule intelligence and monitoring — not legal advice or formal compliance certification. For legal interpretation of regulatory requirements, consult a healthcare attorney. We help you stay informed; your compliance team acts on that information.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="signup">
+  <div class="final-cta-inner">
+    <hr class="section-rule" />
+    <p class="section-label">Subscribe</p>
+    <h2>Stop finding out<br /><em>after the fact.</em></h2>
+    <p>
+      Fee schedules change every quarter. Provider manuals update without announcement. CPT codes get repriced without a press release. Subscribe to ClearPhysicalTherapyRates and know within 30 days of any change that affects your reimbursement.
+    </p>
+    <div class="final-cta-buttons">
+      <a href="https://buy.stripe.com/4gMcN56TjatRbqG74feIw0e" class="btn-primary" style="color:var(--white);">Practice Monitor — $147/mo</a>
+      <a href="https://buy.stripe.com/bJe4gz91rbxV52i88jeIw0f" class="btn-primary" style="background:var(--forest);color:var(--white);">Multi-Location — $247/mo</a>
+    </div>
+    <p class="final-cta-note">No contracts · Cancel anytime · First digest within 30 days</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Clear<span>PhysicalTherapy</span>Rates</div>
+    <ul class="footer-links">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="mailto:hello@clearphysicaltherapyrates.com">Contact</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 ClearPhysicalTherapyRates · Not affiliated with any insurance carrier or PT licensing board</p>
+  </div>
+</footer>
+
+</body>
+</html>
