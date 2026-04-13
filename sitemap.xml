@@ -2,44 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://clearphysicaltherapyrates.com/</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://clearphysicaltherapyrates.com/blog.html</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clearphysicaltherapyrates.com/medicare-pfs-2026-physical-therapy.html</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://clearphysicaltherapyrates.com/pt-cpt-codes-97110-97530-97140-billing-guide.html</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://clearphysicaltherapyrates.com/pt-commercial-carrier-rate-changes-2026.html</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clearphysicaltherapyrates.com/pt-kx-modifier-therapy-cap-2026.html</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://clearphysicaltherapyrates.com/pt-prior-authorization-changes-2026.html</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- Original 5 blog posts -->
+  <url><loc>https://clearphysicaltherapyrates.com/blog/physical-therapy-billing-compliance-2026.html</loc><lastmod>2026-04-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/medicare-physical-therapy-coverage-guide.html</loc><lastmod>2026-04-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/physical-therapy-cpt-codes-guide.html</loc><lastmod>2026-04-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/physical-therapy-prior-authorization-tips.html</loc><lastmod>2026-04-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/physical-therapy-billing-denials-appeals.html</loc><lastmod>2026-04-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- New 10 blog posts (April 13, 2026) -->
+  <url><loc>https://clearphysicaltherapyrates.com/blog/97110-cpt-code-therapeutic-exercise.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/97530-cpt-code-therapeutic-activities.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/97140-cpt-code-manual-therapy.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/how-much-does-physical-therapy-cost.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/is-physical-therapy-covered-by-insurance.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/physical-therapy-without-insurance-cost.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/does-medicare-cover-physical-therapy.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/physical-therapy-cpt-codes-billing-guide.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/how-long-is-a-physical-therapy-session.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://clearphysicaltherapyrates.com/blog/does-medicaid-cover-physical-therapy.html</loc><lastmod>2026-04-13</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
 </urlset>
